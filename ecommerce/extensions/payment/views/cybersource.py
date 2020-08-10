@@ -5,6 +5,7 @@ import logging
 
 import requests
 import six
+from typing import Optional
 import waffle
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
@@ -192,6 +193,10 @@ class CybersourceOrderCompletionView(EdxOrderPlacementMixin):
     A baseclass that includes error handling and financial reporting for orders placed via
     CyberSource.
     """
+
+    transaction_id: Optional[str] = None
+    order_number: Optional[str] = None
+    basket_id: Optional[int] = None
 
     def _log_cybersource_payment_failure(
             self, exception, basket, order_number, transaction_id, ppr, notification_msg=None,
@@ -522,6 +527,18 @@ class CybersourceInterstitialView(CyberSourceProcessorMixin, CybersourceOrderCom
     def post(self, request, *args, **kwargs):  # pylint: disable=unused-argument
         """Process a CyberSource merchant notification and place an order for paid products as appropriate."""
         notification = request.POST.dict()
+        self.transaction_id = notification.get('transaction_id')
+        self.order_number = notification.get('req_reference_number')
+
+        try:
+            self.basket_id = OrderNumberGenerator().basket_id(self.order_number)
+        except:  # pylint: disable=bare-except
+            logger.exception(
+                'Error generating basket_id from CyberSource notification with transaction [%s] and order [%s].',
+                self.transaction_id,
+                self.order_number,
+            )
+
         try:
             basket = self.validate_order_completion(notification)
             monitoring_utils.set_custom_metric('payment_response_validation', 'success')
