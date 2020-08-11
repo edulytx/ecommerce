@@ -516,6 +516,7 @@ def apply_voucher_on_basket_and_check_discount(voucher, request, basket):
     basket.clear_vouchers()
     return False, msg
 
+
 # will come back and check for seat (rather than bulk purchase)
 def check_product_in_basket(basket, product):
     return basket.product_quantity(product)
