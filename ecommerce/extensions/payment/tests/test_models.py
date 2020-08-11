@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
 
 import six
 from django.core.exceptions import ValidationError
 
-from ecommerce.extensions.payment.models import EnterpriseContractMetadata, SDNCheckFailure
+from ecommerce.extensions.payment.models import EnterpriseContractMetadata, SDNCheckFailure, SDNFallbackMetadata
 from ecommerce.tests.testcases import TestCase
 
 
@@ -98,3 +99,40 @@ class EnterpriseContractMetadataTests(TestCase):
             self.ecm.discount_value = value
             with self.assertRaises(ValidationError):
                 self.ecm.clean()
+
+
+class SDNFallbackMetadataTests(TestCase):
+    def setUp(self):
+        super(SDNFallbackMetadataTests, self).setUp()
+        self.file_checksum = 'foobar'
+        self.import_timestamp = datetime.now() + timedelta(days=1)
+
+    def test_minimum_requirements(self):
+        """Make sure the row is created correctly with the minimum dataset + defaults."""
+        actual_metadata = SDNFallbackMetadata.objects.create(
+            file_checksum=self.file_checksum,
+        )
+
+        self.assertEqual(len(SDNFallbackMetadata.objects.all()), 1)
+
+        self.assertEqual(actual_metadata.file_checksum, self.file_checksum)
+        self.assertIsInstance(actual_metadata.download_timestamp, datetime)
+        self.assertEqual(actual_metadata.import_timestamp, None)
+        self.assertEqual(actual_metadata.import_state, 'New')
+
+    def test_maximum_requirements(self):
+        """Make sure the row is created correctly with the biggest dataset"""
+        actual_metadata = SDNFallbackMetadata.objects.create(
+            file_checksum=self.file_checksum,
+            import_timestamp=self.import_timestamp,
+            # the download timestamp is auto-added, so it can't be modified
+            download_timestamp=self.import_timestamp,
+            import_state='Discard',
+        )
+
+        self.assertEqual(len(SDNFallbackMetadata.objects.all()), 1)
+
+        self.assertEqual(actual_metadata.file_checksum, self.file_checksum)
+        self.assertIsInstance(actual_metadata.download_timestamp, datetime)
+        self.assertEqual(actual_metadata.import_timestamp, self.import_timestamp)
+        self.assertEqual(actual_metadata.import_state, 'Discard')
