@@ -135,7 +135,7 @@ def prepare_basket(request, products, voucher=None):
                 request.user.username,
                 mode_for_product(product),
                 product.course_id
-                )
+            )
             return basket
 
         if product.is_enrollment_code_product or \
