@@ -127,19 +127,6 @@ def prepare_basket(request, products, voucher=None):
 
     is_multi_product_basket = len(products) > 1
     for product in products:
-
-        seat_type = getattr(product.attr, 'seat_type', None)
-        certificate_type = getattr(product.attr, 'certificate_type', None)
-        product_type = product.get_product_class().name
-
-        logger.info(
-                    'Product: [%s] , certificate_type: [%s] , seat_type: [%s] , product_type: [%s]',
-                    mode_for_product(product),
-                    certificate_type, 
-                    seat_type, 
-                    product_type
-                )
-
         # Multiple clicks can try adding twice, return if already in basket
         if check_duplicate_seat_attempt(basket, product):
             logger.info(
