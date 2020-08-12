@@ -25,10 +25,10 @@ from ecommerce.extensions.basket.utils import (
     add_utm_params_to_url,
     apply_voucher_on_basket_and_check_discount,
     attribute_cookie_data,
+    check_duplicate_seat_attempt,
     get_basket_switch_data,
     get_payment_microfrontend_url_if_configured,
-    prepare_basket, 
-    check_duplicate_seat_attempt
+    prepare_basket
 )
 from ecommerce.extensions.catalogue.tests.mixins import DiscoveryTestMixin
 from ecommerce.extensions.order.constants import DISABLE_REPEAT_ORDER_CHECK_SWITCH_NAME
