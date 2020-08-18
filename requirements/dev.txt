@@ -163,3 +163,4 @@ webob==1.8.5              # via webtest
 webtest==2.0.33           # via django-webtest
 wrapt==1.11.1             # via astroid
 zeep==2.1.1
+razorpay==1.2.0

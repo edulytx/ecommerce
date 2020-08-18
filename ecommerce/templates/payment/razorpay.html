@@ -1,0 +1,19 @@
+{% load compress %}
+{% load static %}
+
+<form action="{% url 'razorpay:submit' %}" method="POST">
+    {% csrf_token %}
+    <script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            data-key="{{client_side_payment_processor.api_key}}"
+            data-amount="{{amount}}"
+            data-currency="INR"
+            data-order_id="{{receipt}}"
+            data-buttontext="Pay with Razorpay"
+            data-name="edulytX"
+            data-description="Purchase of course"
+            data-image="https://pbs.twimg.com/profile_images/1163392268142829568/3SWbDHxa_400x400.png"
+            data-netbanking="true"
+            data-notes.course_order_id="{{order_id}}">
+    </script>
+</form>

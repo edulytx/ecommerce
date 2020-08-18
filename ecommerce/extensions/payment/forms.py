@@ -229,3 +229,33 @@ class StripeSubmitForm(forms.Form):
             Applicator().apply(basket, self.request.user, self.request)
 
         return basket
+
+
+class RazorpaySubmitForm(forms.Form):
+    """
+    Form for Razorpay submissions.
+
+    This form differs drastically from `PaymentForm`. razorpay_payment_id, razorpay_order_id and razorpay_signature are part
+    of the POST request sent back once confirms payment on Razorpay.
+
+    """
+    basket = forms.ModelChoiceField(
+        queryset=Basket.objects.all(),
+        error_messages={
+            'invalid_choice': _('There was a problem retrieving your basket. Refresh the page to try again.'),
+        }
+    )
+
+    def __init__(self, user, request, *args, **kwargs):
+        super(RazorpaySubmitForm, self).__init__(*args, **kwargs)
+        self.request = request
+        update_basket_queryset_filter(self, user)
+
+    def clean_basket(self):
+        basket = self.cleaned_data['basket']
+
+        if basket:
+            basket.strategy = self.request.strategy
+            Applicator().apply(basket, self.request.user, self.request)
+
+        return basket
