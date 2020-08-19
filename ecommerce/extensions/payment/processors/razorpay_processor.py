@@ -3,21 +3,21 @@ from __future__ import unicode_literals
 
 import logging
 import uuid
-from oscar.apps.payment.exceptions import GatewayError, TransactionDeclined
+import razorpay
+from oscar.apps.payment.exceptions import TransactionDeclined
 
 
 from ecommerce.core.url_utils import get_ecommerce_url
 from ecommerce.extensions.payment.processors import BasePaymentProcessor, HandledProcessorResponse
-import razorpay
 logger = logging.getLogger(__name__)
 
 
-class Razorpay(BasePaymentProcessor):
+class RazorpayProcessor(BasePaymentProcessor):
     """
     The Razorpay processor Class and it's methods support payment processing via razorpay
     """
     NAME = 'razorpay'
-    template_name = 'payment/razorpay.html'
+    #template_name = 'payment/razorpay.html'
 
     def __init__(self, site):
         """ Initialize method """
@@ -27,7 +27,7 @@ class Razorpay(BasePaymentProcessor):
               Raises:
                   KeyError: If a required setting is not configured for this payment processor
               """
-        super(Razorpay, self).__init__(site)
+        super(RazorpayProcessor, self).__init__(site)
         configuration = self.configuration
 
         # Added by edulytX
@@ -41,7 +41,7 @@ class Razorpay(BasePaymentProcessor):
         return get_ecommerce_url(self.configuration['cancel_checkout_path'])
 
     def _get_basket_amount(self, basket):
-        return basket.total_incl_tax * 100
+        return int(basket.total_incl_tax * 100)
 
     def get_transaction_parameters(self, basket, request=None, use_client_side_checkout=False, **kwargs):
         """
@@ -105,13 +105,15 @@ class Razorpay(BasePaymentProcessor):
             )
             raise TransactionDeclined(error, basket.id, 500)
 
-        self.record_processor_response(payment.to_dict(), transaction_id=payment.id, basket=basket)
-        logger.info("Successfully created Razorpay payment [%s] for basket [%d].", payment.id, basket.id)
         order_id = payment['id']
+        self.record_processor_response(payment, transaction_id=order_id, basket=basket)
+        logger.info("Successfully created Razorpay payment [%s] for basket [%d].", order_id, basket.id)
 
         # Add the extra parameters
         parameters.update(kwargs.get('extra_parameters', {}))
-        parameters.update(kwargs.get('order_id', order_id))
+        parameters['order_id'] = order_id
+        parameters['payment_page_url']  = "/payment/razorpay/form/" + str(basket.id) + "/"
+
         return parameters
 
     def handle_processor_response(self, response, basket=None):
@@ -150,5 +152,7 @@ class Razorpay(BasePaymentProcessor):
             card_type=None
         )
 
+    def issue_credit(self, order_number, basket, reference_number, amount, currency):
+        raise NotImplementedError('The Razorpay payment processor does not issue_credit method.')
 
 

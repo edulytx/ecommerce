@@ -160,6 +160,9 @@
                             {% elif processor.NAME == 'paypal' %}
                                 {# Translators: Do NOT translate the name PayPal. #}
                                 {% trans "Checkout with PayPal" %}
+                             {% elif processor.NAME == 'razorpay' %}
+                                {# Translators: Do NOT translate the name Razorpay. #}
+                                {% trans "Checkout with Razorpay" %}
                             {% endif %}
                         </button>
                     {% endfor %}

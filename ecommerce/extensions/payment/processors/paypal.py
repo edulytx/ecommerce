@@ -231,7 +231,6 @@ class Paypal(BasePaymentProcessor):
             )
             raise GatewayError(
                 'Approval URL missing from PayPal payment response. See entry [{}] for details.'.format(entry.id))
-
         parameters = {
             'payment_page_url': approval_url,
         }

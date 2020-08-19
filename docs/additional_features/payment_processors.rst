@@ -31,6 +31,7 @@ these classes should inherit from xxx.
    PAYMENT_PROCESSORS = (
        'ecommerce.extensions.payment.processors.cybersource.Cybersource',
        'ecommerce.extensions.payment.processors.paypal.Paypal',
+       'ecommerce.extensions.payment.processors.razorpay_processor.RazorpayProcessor',
    )
 
 The secret keys and additional configuration must be specified for each site. The keys of the
@@ -47,12 +48,18 @@ site.
            'paypal': {
                ...
            },
+           'razorpay': {
+               ...
+           },
        },
        'mitxpro': {
            'cybersource': {
                ...
            },
            'paypal': {
+               ...
+           },
+           'razorpay': {
                ...
            },
        },

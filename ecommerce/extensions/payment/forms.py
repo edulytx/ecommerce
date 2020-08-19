@@ -241,6 +241,8 @@ class RazorpaySubmitForm(forms.Form):
     """
     basket = forms.ModelChoiceField(
         queryset=Basket.objects.all(),
+        widget=forms.HiddenInput(),
+        required=False,
         error_messages={
             'invalid_choice': _('There was a problem retrieving your basket. Refresh the page to try again.'),
         }

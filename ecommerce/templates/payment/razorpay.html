@@ -1,19 +1,62 @@
+{% extends "edx/base.html" %}
+
 {% load compress %}
 {% load static %}
 
-<form action="{% url 'razorpay:submit' %}" method="POST">
-    {% csrf_token %}
-    <script
-            src="https://checkout.razorpay.com/v1/checkout.js"
-            data-key="{{client_side_payment_processor.api_key}}"
-            data-amount="{{amount}}"
-            data-currency="INR"
-            data-order_id="{{receipt}}"
-            data-buttontext="Pay with Razorpay"
-            data-name="edulytX"
-            data-description="Purchase of course"
-            data-image="https://pbs.twimg.com/profile_images/1163392268142829568/3SWbDHxa_400x400.png"
-            data-netbanking="true"
-            data-notes.course_order_id="{{order_id}}">
-    </script>
-</form>
+{% block content %}
+<style>
+		.razorpay-payment-button{
+			color: #fff;
+    		background-color: #007bff;
+    		border-color: #007bff;
+		    display: inline-block;
+		    font-weight: 400;
+		    text-align: center;
+		    vertical-align: middle;
+		    border: 1px solid transparent;
+		    padding: .375rem .75rem;
+		    font-size: 1rem;
+		    line-height: 1.5;
+		    border-radius: .25rem;
+		}
+		.card{
+		    padding: 2%;
+		    border: 1px solid lightgray;
+		    margin:auto;
+		    text-align: center;
+		    margin-top: 3% !important;
+		    width: auto;
+		}
+</style>
+
+<div class="container">
+    <div class="card w-75 mt-5">
+        <div class="card-body">
+
+            <h2 class="card-title">Full course of Python and django</h2>
+            <p class="card-text"><small>Click on the pay button to purchase the course.</small></p>
+            <p class="card-text">Price: <span>500</span> Rupees</p>
+
+            <!-- code of razorpay integration -->
+            <div class="row">
+                <form action="{% url 'razorpay:submit' %}" method="POST">
+                    {% csrf_token %}
+                    <script
+                            src="https://checkout.razorpay.com/v1/checkout.js"
+                            data-key="rzp_test_Gw1W7lqoPB23fZ"
+                            data-amount="500"
+                            data-currency="INR"
+                            data-order_id="order_FSctSz4cTg9Jjn"
+                            data-buttontext="Pay with Razorpay"
+                            data-name="edulytX"
+                            data-description="Purchase of course"
+                            data-image="https://pbs.twimg.com/profile_images/1163392268142829568/3SWbDHxa_400x400.png"
+                            data-netbanking="true"
+                            data-notes.course_order_id="122">
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -243,6 +243,8 @@ class SiteConfiguration(models.Model):
 
     def _all_payment_processors(self):
         """ Returns all processor classes declared in settings. """
+        print('_all_payment_processors method')
+        print(settings.PAYMENT_PROCESSORS)
         all_processors = [get_processor_class(path) for path in settings.PAYMENT_PROCESSORS]
         return all_processors
 
@@ -255,7 +257,7 @@ class SiteConfiguration(models.Model):
         """
         all_processors = self._all_payment_processors()
         all_processor_names = {processor.NAME for processor in all_processors}
-
+        print(all_processor_names)
         missing_processor_configurations = self.payment_processors_set - all_processor_names
         if missing_processor_configurations:
             processor_config_repr = ", ".join(missing_processor_configurations)

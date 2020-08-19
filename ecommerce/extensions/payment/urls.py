@@ -1,6 +1,7 @@
 from django.conf.urls import include, url
 
-from ecommerce.extensions.payment.views import PaymentFailedView, SDNFailure, cybersource, paypal, stripe, razorpay
+from ecommerce.extensions.payment.views import PaymentFailedView, SDNFailure, cybersource, paypal, stripe, razorpay_view
+from django.views.decorators.csrf import csrf_exempt
 
 CYBERSOURCE_APPLE_PAY_URLS = [
     url(r'^authorize/$', cybersource.CybersourceApplePayAuthorizationView.as_view(), name='authorize'),
@@ -26,7 +27,8 @@ STRIPE_URLS = [
 ]
 
 RAZORPAY_URLS = [
-    url(r'^submit/$', razorpay.RazorpaySubmitView.as_view(), name='submit')
+    url(r'^submit/$', razorpay_view.RazorpaySubmitView.as_view(), name='submit'),
+    url(r'^form/(\d+)/', csrf_exempt(razorpay_view.RazorpayPaymentFormView.as_view()), name='form')
 ]
 
 urlpatterns = [
