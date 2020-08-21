@@ -19,42 +19,56 @@
 		    line-height: 1.5;
 		    border-radius: .25rem;
 		}
-		.card{
+		.item-information{
 		    padding: 2%;
-		    border: 1px solid lightgray;
 		    margin:auto;
-		    text-align: center;
+		    text-align: left;
 		    margin-top: 3% !important;
+		    border: 1px solid lightgray;
 		    width: auto;
 		}
 </style>
 
 <div class="container">
-    <div class="card w-75 mt-5">
-        <div class="card-body">
+    <div class="row">
+        <div class="col-md-6 item-information">
+            <div class="card-body">
+                <h2 class="card-title">Items being purchased<br></h2>
+                <hr>
+                {% for item in items_list %}
+                <span>{{item.name}}</span><br>
+                {% endfor %}
+                <br><span class="card-text">Total Price: &#8377; {{amount}}</span>
+                <br><span class="card-text"><small>Note: Click on the pay button to purchase the course. Click on <a href="javascript:history.back()">back</a> to go back to previous screen.</small></span>
 
-            <h2 class="card-title">Full course of Python and django</h2>
-            <p class="card-text"><small>Click on the pay button to purchase the course.</small></p>
-            <p class="card-text">Price: <span>500</span> Rupees</p>
+                <!-- code of razorpay integration -->
+                <div>
+                    <form action="{% url 'razorpay:submit' %}" method="POST">
+                        {% csrf_token %}
+                        <script
+                                src="https://checkout.razorpay.com/v1/checkout.js"
+                                data-key="{{razorpay_api_key}}"
+                                data-amount="{{amount}}"
+                                data-currency="INR"
+                                data-order_id="{{payment_id}}"
+                                data-buttontext="Pay with Razorpay"
+                                data-name="edulytX"
+                                data-description="Purchase of course"
+                                data-image="https://pbs.twimg.com/profile_images/1163392268142829568/3SWbDHxa_400x400.png"
+                                data-netbanking="true"
+                                data-notes.user="{{user}}"
+                                data-notes.invoice_number="{{invoice_number}}"
+                                data-notes.items_list="{{items_list}}"
+                        >
+                        </script>
+                        <input type="hidden" name="order_number" value="{{invoice_number}}">
+                        <input type="hidden" name="basket_id" value="{{basket_id}}">
+                        <input type="hidden" name="user" value="{{user}}">
+                        <input type="hidden" name="amount_paid" value="{{amount}}">
+                        <input type="hidden" name="payment_id" value="{{payment_id}}">
 
-            <!-- code of razorpay integration -->
-            <div class="row">
-                <form action="{% url 'razorpay:submit' %}" method="POST">
-                    {% csrf_token %}
-                    <script
-                            src="https://checkout.razorpay.com/v1/checkout.js"
-                            data-key="rzp_test_Gw1W7lqoPB23fZ"
-                            data-amount="500"
-                            data-currency="INR"
-                            data-order_id="order_FSctSz4cTg9Jjn"
-                            data-buttontext="Pay with Razorpay"
-                            data-name="edulytX"
-                            data-description="Purchase of course"
-                            data-image="https://pbs.twimg.com/profile_images/1163392268142829568/3SWbDHxa_400x400.png"
-                            data-netbanking="true"
-                            data-notes.course_order_id="122">
-                    </script>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -239,6 +239,14 @@ class RazorpaySubmitForm(forms.Form):
     of the POST request sent back once confirms payment on Razorpay.
 
     """
+    order_number = forms.CharField(widget=forms.HiddenInput(), required=True)
+    basket_id = forms.CharField(widget=forms.HiddenInput(), required=True)
+    razorpay_payment_id = forms.CharField(widget=forms.HiddenInput(), required=True)
+    razorpay_order_id = forms.CharField(widget=forms.HiddenInput(), required=True)
+    razorpay_signature = forms.CharField(widget=forms.HiddenInput(), required=True)
+    amount_paid = forms.IntegerField(widget=forms.HiddenInput(), required=True)
+    payment_id = forms.CharField(widget=forms.HiddenInput(), required=True)
+
     basket = forms.ModelChoiceField(
         queryset=Basket.objects.all(),
         widget=forms.HiddenInput(),

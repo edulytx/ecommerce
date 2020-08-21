@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import logging
 import uuid
 import razorpay
+import json
 from oscar.apps.payment.exceptions import TransactionDeclined
 
 
@@ -37,8 +38,12 @@ class RazorpayProcessor(BasePaymentProcessor):
         self.razorpay_client = razorpay.Client(auth=(self.api_key, self.api_password))
 
     @property
-    def cancel_page_url(self):
+    def cancel_url(self):
         return get_ecommerce_url(self.configuration['cancel_checkout_path'])
+
+    @property
+    def error_url(self):
+        return get_ecommerce_url(self.configuration['error_path'])
 
     def _get_basket_amount(self, basket):
         return int(basket.total_incl_tax * 100)
@@ -105,15 +110,33 @@ class RazorpayProcessor(BasePaymentProcessor):
             )
             raise TransactionDeclined(error, basket.id, 500)
 
-        order_id = payment['id']
-        self.record_processor_response(payment, transaction_id=order_id, basket=basket)
-        logger.info("Successfully created Razorpay payment [%s] for basket [%d].", order_id, basket.id)
+        payment_id = payment['id']
+        self.record_processor_response(payment, transaction_id=payment_id, basket=basket)
+        logger.info("Successfully created Razorpay payment [%s] for basket [%d].", payment_id, basket.id)
 
         # Add the extra parameters
         parameters.update(kwargs.get('extra_parameters', {}))
-        parameters['order_id'] = order_id
+        basket_owner = basket.owner
+        if basket_owner is not None:
+            parameters['user'] = basket_owner.username
+        parameters['invoice_number']  = basket.order_number
+        parameters['basket_id'] = basket.id
+        parameters['payment_id'] = payment_id
+        items_list =  [
+                        {
+                            'quantity': line.quantity,
+                            'name': line.product.title,
+                            'price': unicode(line.line_price_incl_tax_incl_discounts / line.quantity)
+                        }
+                        for line in basket.all_lines()
+                    ]
+
+        parameters['items_list'] = json.dumps(items_list)
+        parameters['razorpay_api_key'] = self.api_key
         parameters['payment_page_url']  = "/payment/razorpay/form/" + str(basket.id) + "/"
 
+        print('PARAMETERS')
+        print(parameters)
         return parameters
 
     def handle_processor_response(self, response, basket=None):
@@ -123,9 +146,9 @@ class RazorpayProcessor(BasePaymentProcessor):
         :param basket:
         :return:
         """
-        payment_id = response['razorpay_payment_id']
-        signature = response['razorpay_signature']
-        razorpay_order_id = response['razorpay_order_id']
+        payment_id = response.get('razorpay_payment_id')
+        signature = response.get('razorpay_signature')
+        razorpay_order_id = response.get('razorpay_order_id')
         try:
             param_dict = {'razorpay_order_id': razorpay_order_id, 'razorpay_payment_id': payment_id,
                           'razorpay_signature': signature}
@@ -153,6 +176,6 @@ class RazorpayProcessor(BasePaymentProcessor):
         )
 
     def issue_credit(self, order_number, basket, reference_number, amount, currency):
-        raise NotImplementedError('The Razorpay payment processor does not issue_credit method.')
+        raise NotImplementedError('The Razorpay payment processor does not implement issue_credit method.')
 
 
