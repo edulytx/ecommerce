@@ -137,6 +137,7 @@
                 </div>
             {% endif %}
 
+            <p>This is to check if code changes are working.</p>
             <div class="pull-right payment-buttons" data-basket-id="{{ basket.id }}">
                 {% if free_basket %}
                     <a href="{% url 'checkout:free-checkout' %}"
@@ -148,6 +149,7 @@
                     </a>
                 {% else %}
                     {% for processor in payment_processors %}
+                        <span>{{ processor.NAME|lower }}</span>
                         <button data-track-type="click"
                                 data-track-event="edx.bi.ecommerce.basket.payment_selected"
                                 data-track-category="checkout"
