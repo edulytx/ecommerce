@@ -149,7 +149,6 @@
                     </a>
                 {% else %}
                     {% for processor in payment_processors %}
-                        <span>{{ processor.NAME|lower }}</span>
                         <button data-track-type="click"
                                 data-track-event="edx.bi.ecommerce.basket.payment_selected"
                                 data-track-category="checkout"
@@ -157,15 +156,17 @@
                                 data-track-checkout-type="hosted"
                                 class="btn payment-button"
                                 id="{{ processor.NAME|lower }}">
-                            {% if processor.NAME == 'cybersource' %}
-                                {% trans "Checkout" %}
-                            {% elif processor.NAME == 'paypal' %}
-                                {# Translators: Do NOT translate the name PayPal. #}
-                                {% trans "Checkout with PayPal" %}
-                             {% elif processor.NAME == 'razorpay' %}
-                                {# Translators: Do NOT translate the name Razorpay. #}
-                                {% trans "Checkout with Razorpay" %}
-                            {% endif %}
+
+                                <span>Checkout with {{ processor.NAME|lower }}</span>
+<!--                            {% if processor.NAME == 'cybersource' %}-->
+<!--                                {% trans "Checkout" %}-->
+<!--                            {% elif processor.NAME == 'paypal' %}-->
+<!--                                {# Translators: Do NOT translate the name PayPal. #}-->
+<!--                                {% trans "Checkout with PayPal" %}-->
+<!--                             {% elif processor.NAME == 'razorpay' %}-->
+<!--                                {# Translators: Do NOT translate the name Razorpay. #}-->
+<!--                                {% trans "Checkout with Razorpay" %}-->
+<!--                            {% endif %}-->
                         </button>
                     {% endfor %}
                 {% endif %}
