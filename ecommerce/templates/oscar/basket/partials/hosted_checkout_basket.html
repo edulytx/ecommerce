@@ -137,7 +137,6 @@
                 </div>
             {% endif %}
 
-            <p>This is to check if code changes are working.</p>
             <div class="pull-right payment-buttons" data-basket-id="{{ basket.id }}">
                 {% if free_basket %}
                     <a href="{% url 'checkout:free-checkout' %}"
@@ -156,17 +155,15 @@
                                 data-track-checkout-type="hosted"
                                 class="btn payment-button"
                                 id="{{ processor.NAME|lower }}">
-
-                                <span>Checkout with {{ processor.NAME|lower }}</span>
-<!--                            {% if processor.NAME == 'cybersource' %}-->
-<!--                                {% trans "Checkout" %}-->
-<!--                            {% elif processor.NAME == 'paypal' %}-->
-<!--                                {# Translators: Do NOT translate the name PayPal. #}-->
-<!--                                {% trans "Checkout with PayPal" %}-->
-<!--                             {% elif processor.NAME == 'razorpay' %}-->
-<!--                                {# Translators: Do NOT translate the name Razorpay. #}-->
-<!--                                {% trans "Checkout with Razorpay" %}-->
-<!--                            {% endif %}-->
+                            {% if processor.NAME == 'cybersource' %}
+                                {% trans "Checkout" %}
+                            {% elif processor.NAME == 'paypal' %}
+                                {# Translators: Do NOT translate the name PayPal. #}
+                                {% trans "Checkout with PayPal" %}
+                             {% elif processor.NAME == 'razorpay' %}
+                                {# Translators: Do NOT translate the name Razorpay. #}
+                                {% trans "Checkout with Razorpay" %}
+                            {% endif %}
                         </button>
                     {% endfor %}
                 {% endif %}
