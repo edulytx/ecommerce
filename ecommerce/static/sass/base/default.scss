@@ -15,4 +15,7 @@ $scaled-height: 39px !default;
     .navbar-brand-logo {
         @include brand-logo($brand-logo-width, $brand-logo-height, $scaled-height);
     }
+    .navbar-brand-logo {
+        width: auto !important;
+    }
 }
