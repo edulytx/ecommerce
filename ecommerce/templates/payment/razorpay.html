@@ -5,6 +5,11 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
 <style>
+        .edulytx-logo{
+            height: 60x;
+            width: auto;
+        }
+
 		.razorpay-payment-button{
 			color: #fff;
     		background-color: #1E8142;
@@ -34,16 +39,17 @@
     <div class="row">
         <div class="col-md-6 item-information">
             <div class="card-body">
+                <h1>
+                    <img class="edulytx-logo" alt="edulytX" src="{% static 'images/default-logo.png' %}"/>
+                </h1>
                 <h2 class="card-title">Items being purchased<br></h2>
-                <small><a href="javascript:history.back()">Back</a></small>
+                <small><a href="javascript:history.back()">Click here to go back to checkout page</a></small>
                 <hr>
                 {% for item in items_list %}
                 <span>{{item.name}}</span><br>
                 {% endfor %}
                 <br><span class="card-text">Total Price: &#8377; {{amount_paid}}</span>
-                <br><span><small>Please note, bulk enrollment is not supported via this payment option.</small></span>
-                <br>
-
+                <hr>
                 <!-- code of razorpay integration -->
                 <div>
                     <form action="{% url 'razorpay:submit' %}" method="POST">
