@@ -80,8 +80,9 @@ class RazorpayProcessor(BasePaymentProcessor):
          Returns:
              dict: Dictionary containing the payment parameters that should be sent to CyberSource.
         """
+        amount = basket.total_incl_tax
         parameters = {
-            'amount': int(basket.total_incl_tax),
+            'amount': int(amount*100),
             'currency': 'INR',
             'receipt': uuid.uuid4().hex,
             'payment_capture': 1
@@ -119,6 +120,7 @@ class RazorpayProcessor(BasePaymentProcessor):
         parameters['invoice_number']  = basket.order_number
         parameters['basket_id'] = basket.id
         parameters['payment_id'] = payment_id
+        parameters['amount'] = int(basket.total_incl_tax)
         items_list =  [
                         {
                             'quantity': line.quantity,

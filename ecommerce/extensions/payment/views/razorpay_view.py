@@ -60,14 +60,14 @@ class RazorpayPaymentFormView(View):
             items_list = json.loads(items_list)
 
         return render(request, 'payment/razorpay.html', {
-            'amount': amount,
+            'amount': int(amount*100),
             'payment_id': payment_id,
             'user': user,
             'invoice_number': invoice_number,
             'items_list': items_list,
             'razorpay_api_key': razorpay_api_key,
             'basket_id': basket_id,
-            'amount_paid': int(amount)/100
+            'amount_paid': amount
         })
 
 
