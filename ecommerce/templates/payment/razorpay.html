@@ -23,7 +23,15 @@
 		    font-size: 1rem;
 		    line-height: 1.5;
 		    border-radius: .20rem;
-		    height: 4em;
+		    font-size: 1.8em;
+		}
+
+		.price-text{
+			font-size: 1.7em;
+		}
+
+		.title-text{
+		   font-size: 2em;
 		}
 
 		.item-information{
@@ -43,13 +51,13 @@
                 <h1>
                     <img class="edulytx-logo" alt="edulytX" src="{% static 'images/default-logo.png' %}"/>
                 </h1>
-                <h2 class="card-title">Items being purchased<br></h2>
+                <h1 class="card-title">Items being purchased<br></h1>
                     <a href="javascript:history.back()">Click here to go back to checkout page</a>
                 <hr>
                 {% for item in items_list %}
-                <h4>{{item.name}}</h4>
+                <h4 class="title-text">{{item.name}}</h4>
                 {% endfor %}
-                <br><h5 class="card-text">Total Price: &#8377; {{amount_paid}}</h5>
+                <br><span class="price-text">Total Price: &#8377; {{amount_paid}}</span>
                 <hr>
                 <!-- code of razorpay integration -->
                 <div>
