@@ -179,7 +179,7 @@ define([
                     seat;
 
                 expect($auditElement.length).toBe(1);
-                expect($auditElement.find('.seat-price').text()).toBe('$0.00');
+                expect($auditElement.find('.seat-price').text()).toBe('Rs. 0.00');
 
                 expect($verifiedElement.length).toBe(1);
                 expect($verifiedElement.find('[name=price]').val()).toBe('15.00');

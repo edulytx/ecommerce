@@ -45,9 +45,6 @@ class RazorpayProcessor(BasePaymentProcessor):
     def error_url(self):
         return get_ecommerce_url(self.configuration['error_path'])
 
-    def _get_basket_amount(self, basket):
-        return int(basket.total_incl_tax * 100)
-
     def get_transaction_parameters(self, basket, request=None, use_client_side_checkout=False, **kwargs):
         """
         Generate a dictionary of signed parameters Razorpay requires to complete a transaction.
@@ -83,8 +80,9 @@ class RazorpayProcessor(BasePaymentProcessor):
          Returns:
              dict: Dictionary containing the payment parameters that should be sent to CyberSource.
         """
+        amount = basket.total_incl_tax
         parameters = {
-            'amount': self._get_basket_amount(basket),
+            'amount': int(amount*100),
             'currency': 'INR',
             'receipt': uuid.uuid4().hex,
             'payment_capture': 1
@@ -122,6 +120,7 @@ class RazorpayProcessor(BasePaymentProcessor):
         parameters['invoice_number']  = basket.order_number
         parameters['basket_id'] = basket.id
         parameters['payment_id'] = payment_id
+        parameters['amount'] = int(basket.total_incl_tax)
         items_list =  [
                         {
                             'quantity': line.quantity,
@@ -135,8 +134,6 @@ class RazorpayProcessor(BasePaymentProcessor):
         parameters['razorpay_api_key'] = self.api_key
         parameters['payment_page_url']  = "/payment/razorpay/form/" + str(basket.id) + "/"
 
-        print('PARAMETERS')
-        print(parameters)
         return parameters
 
     def handle_processor_response(self, response, basket=None):
