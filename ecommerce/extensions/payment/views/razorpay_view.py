@@ -6,7 +6,6 @@ from ecommerce.extensions.checkout.mixins import EdxOrderPlacementMixin
 from ecommerce.extensions.checkout.utils import get_receipt_page_url
 from ecommerce.extensions.payment.forms import RazorpaySubmitForm
 from ecommerce.extensions.payment.processors.razorpay_processor import RazorpayProcessor
-from ecommerce.extensions.payment.views import BasePaymentSubmitView
 from django.views.generic import View
 from django.shortcuts import redirect
 from django.db import transaction
@@ -16,7 +15,9 @@ from django.shortcuts import render
 from django.core.exceptions import MultipleObjectsReturned
 from oscar.apps.partner import strategy
 from oscar.apps.payment.exceptions import PaymentError
-
+from ecommerce.core.url_utils import (
+    get_lms_explore_courses_url
+)
 
 
 logger = logging.getLogger(__name__)
@@ -67,7 +68,8 @@ class RazorpayPaymentFormView(View):
             'items_list': items_list,
             'razorpay_api_key': razorpay_api_key,
             'basket_id': basket_id,
-            'amount_paid': amount
+            'amount_paid': amount,
+            'explore_courses_url': get_lms_explore_courses_url()
         })
 
 
