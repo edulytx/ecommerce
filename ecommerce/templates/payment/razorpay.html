@@ -1,96 +1,107 @@
 {% load compress %}
 {% load static %}
-
 {% block content %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
 <style>
-        .edulytx-logo{
-            height: 60px;
-            width: auto;
+    img,#main{
+        padding-left:4em;
+        padding-right:4em;
+    }
+    #line{
+        border-bottom:0.2em solid dodgerblue;
+    }
+    #main{
+        padding-top:2em;
+        padding-bottom:2em;
+        margin-top: 2em;
+        border:1px solid lightgray;
+    }
+    .font{
+        font-family: 'Poppins',sans-serif;
+        font-size: 1.3em;
+    }
+
+    .button {
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 1em;
+        margin: 4px 2px;
+        cursor: pointer;
+        background-color: green;
+    }
+
+    @media only screen and (max-width: 360px) {
+        img,#main{
+            padding-left:1em;
+            padding-right:1em;
         }
+    }
 
-		.razorpay-payment-button{
-			color: #fff;
-    		background-color: #1E8142;
-    		border-color: #1E8142;
-		    display: inline-block;
-		    font-weight: 400;
-		    text-align: center;
-		    vertical-align: middle;
-		    border: 1px solid transparent;
-		    padding: .375rem .75rem;
-		    font-size: 1rem;
-		    line-height: 1.5;
-		    border-radius: .20rem;
-		    font-size: 1.8em;
-		}
-
-		.price-text{
-			font-size: 1.7em;
-		}
-
-		.title-text{
-		   font-size: 2em;
-		}
-
-		.item-information{
-		    padding: 2%;
-		    margin:auto;
-		    text-align: left;
-		    margin-top: 3% !important;
-		    border: 1px solid lightgray;
-		    width: auto;
-		}
+    @media only screen and (max-width: 768px) {
+        img,#main{
+            padding-left:2em;
+            padding-right:2em;
+        }
+    }
 </style>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12 item-information">
-            <div class="card-body">
-                <h1>
-                    <img class="edulytx-logo" alt="edulytX" src="{% static 'images/default-logo.png' %}"/>
-                </h1>
-                <h1 class="card-title">Items being purchased<br></h1>
-                    <a href="javascript:history.back()">Click here to go back to checkout page</a>
-                <hr>
-                {% for item in items_list %}
-                <h4 class="title-text">{{item.name}}</h4>
-                {% endfor %}
-                <br><span class="price-text">Total Price: &#8377; {{amount_paid}}</span>
-                <hr>
-                <!-- code of razorpay integration -->
-                <div>
-                    <form action="{% url 'razorpay:submit' %}" method="POST">
-                        {% csrf_token %}
-                        <script
-                                src="https://checkout.razorpay.com/v1/checkout.js"
-                                data-key="{{razorpay_api_key}}"
-                                data-amount="{{amount}}"
-                                data-currency="INR"
-                                data-order_id="{{payment_id}}"
-                                data-buttontext="Pay with Razorpay"
-                                data-name="edulytX"
-                                data-description="Purchase of course"
-                                data-image="https://raifox.com/edulytxlive/logo.png"
-                                data-netbanking="true"
-                                data-notes.user="{{user}}"
-                                data-notes.invoice_number="{{invoice_number}}"
-                                data-notes.items_list="{{items_list}}"
-                        >
-                        </script>
-                        <input type="hidden" name="order_number" value="{{invoice_number}}">
-                        <input type="hidden" name="basket_id" value="{{basket_id}}">
-                        <input type="hidden" name="user" value="{{user}}">
-                        <input type="hidden" name="amount_paid" value="{{amount}}">
-                        <input type="hidden" name="payment_id" value="{{payment_id}}">
-
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+<div>
+    <img src="{% static 'images/default-logo.png' %}" alt="navbar-logo" width="120" height="65">
 </div>
+
+<div id="line">
+    <span></span>
+</div>
+
+<div id="main">
+    <div><span class="font">Items being purchased</span></div>
+    <br>
+        <a class="font" href="https://edulytx.com/courses">Click here to go back to courses</a>
+    <br><br>
+    <div>
+        {% for item in items_list %}
+            <span class="font">{{item.name}}</span>
+        {% endfor %}
+    </div>
+    <br>
+    <div><span class="font">Total Price: &#8377; {{amount_paid}}</span></div>
+    <br>
+    <div class="button font">
+        <form action="{% url 'razorpay:submit' %}" method="POST">
+            {% csrf_token %}
+            <script
+                    src="https://checkout.razorpay.com/v1/checkout.js"
+                    data-key="{{razorpay_api_key}}"
+                    data-amount="{{amount}}"
+                    data-currency="INR"
+                    data-order_id="{{payment_id}}"
+                    data-buttontext="Pay with Razorpay"
+                    data-name="edulytX"
+                    data-description="Purchase of course"
+                    data-image="https://raifox.com/edulytxlive/logo.png"
+                    data-netbanking="true"
+                    data-notes.user="{{user}}"
+                    data-notes.invoice_number="{{invoice_number}}"
+                    data-notes.items_list="{{items_list}}"
+            >
+            </script>
+            <input type="hidden" name="order_number" value="{{invoice_number}}">
+            <input type="hidden" name="basket_id" value="{{basket_id}}">
+            <input type="hidden" name="user" value="{{user}}">
+            <input type="hidden" name="amount_paid" value="{{amount}}">
+            <input type="hidden" name="payment_id" value="{{payment_id}}">
+
+        </form>
+    </div>
+
+
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
