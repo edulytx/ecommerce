@@ -1,7 +1,12 @@
 {% load compress %}
 {% load static %}
-{% block content %}
 
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase course</title>
+</head>
 <style>
     img,#main{
         padding-left:4em;
@@ -20,18 +25,18 @@
         font-family: 'Poppins',sans-serif;
         font-size: 1.3em;
     }
-
-    .button {
+    .razorpay-payment-button{
         border: none;
         color: white;
         padding: 15px 32px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 1em;
+        font-size: 1.3em;
         margin: 4px 2px;
         cursor: pointer;
         background-color: green;
+        font-family: 'Poppins',sans-serif;
     }
 
     @media only screen and (max-width: 360px) {
@@ -70,7 +75,7 @@
     <br>
     <div><span class="font">Total Price: &#8377; {{amount_paid}}</span></div>
     <br>
-    <div class="button font">
+    <div>
         <form action="{% url 'razorpay:submit' %}" method="POST">
             {% csrf_token %}
             <script
